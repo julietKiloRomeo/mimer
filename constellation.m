@@ -1,4 +1,4 @@
-function C = constallation(y, fs)
+function C = constellation(y, fs)
 
 [T, f, SG]  = spectrogram(y, fs, 1);
 idx         = f < 4000;

@@ -1,14 +1,14 @@
 clear all
-% [y1, fs1] = audioread('daisy.wav');
-% [y2, fs2] = audioread('sorry_dave.wav');
+[y1, fs1] = audioread('daisy.wav');
+[y2, fs2] = audioread('sorry_dave.wav');
 
-[y1, fs1] = audioread('HOC_s02e01.mp3');
-[y2, fs2] = audioread('HOC_s02e02.mp3');
+% [y1, fs1] = audioread('HOC_s02e01.mp3');
+% [y2, fs2] = audioread('HOC_s02e02.mp3');
 
 %%
-C1 = constallation(y1, fs1);
+C1 = constellation(y1, fs1);
 %%
-C2 = constallation(y2, fs2);
+C2 = constellation(y2, fs2);
 
 %%
 c = containers.Map;
@@ -37,7 +37,7 @@ dT  = 2;
 for T_0 = linspace(0,T_vec(end)-dT,50);
     idx         = ( T_vec >= T_0 ) & ( T_vec <= T_0+dT );
     soundbite   = y(idx);
-    C           = constallation(soundbite, fs);
+    C           = constellation(soundbite, fs);
     
     
     for i=1:numel(C)

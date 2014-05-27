@@ -11,8 +11,8 @@ iidx = (1:50000) + 40000;
 di = 25000;
 iidx = (1:50000) + di;
 dT = di/fs;
-C1 = constallation(y, fs);
-C2 = constallation(y(iidx), fs);
+C1 = constellation(y, fs);
+C2 = constellation(y(iidx), fs);
 %%
 figure(1), clf
 hold all
