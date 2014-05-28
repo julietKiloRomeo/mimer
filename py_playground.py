@@ -13,30 +13,59 @@ import matplotlib.pyplot as pp
 from scipy.io import wavfile
 
 fs, data = wavfile.read('daisy16.wav')
-print len(data)
 import pywt
 
 
+def nextpow2(i):
+    n = 2
+    while n < i: n = n * 2
+    return n
+    
+
+
+
+tmp = np.zeros(nextpow2(len(data)))
+tmp[:len(data)] = data
+data = tmp
+
+print len(data)
 
 w_coeff = (data,)
 T       = (np.arange(len(data)),)
 IM      = np.array([])
 cA      = data
-for i in range(16):
+
+X       = []
+Y       = []
+Z       = []
+
+for i in range(8):
     cA, cD  = pywt.dwt(cA, 'db2')
     w_coeff = w_coeff + (cD,)
     T       = T + (np.arange(len(cD))*2**(i+1),)
-    imline = np.array([np.kron(cD[:-2], np.ones((2**(i+1))))])
-    if len(IM)==0:
-        IM = imline
+    imline = np.array([np.kron(cD, np.ones((2**(i+1))))])
+    
+    dx = np.linspace(0,1,len(cA))    
+    dy = np.zeros(len(cA)) + i   
+    dz = cA
+    
+    if len(cA) < 60000:    
+        X = np.append(X, dx)
+        Y = np.append(Y, dy)
+        Z = np.append(Z, dz)
+    
+#    if len(IM)==0:
+#        IM = imline
 #    else:
 #        IM = np.append(IM, imline, axis=0)
 #    print np.size(imline)
-    
-    
+#    
+#print np.size(IM)
 
 
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
 #f, ax = plt.subplots(3, 1)
 #
 #ax[0].plot(T[0], np.abs(w_coeff[0]))
@@ -44,10 +73,14 @@ import matplotlib.pyplot as plt
 #    ax[j].plot(T[j+8], np.abs(w_coeff[j+8]))
 #
 
+fig = plt.figure(figsize=(5,5) )
+ax = fig.gca(projection='3d')
 
-imgplot = plt.imshow(IM)
 
-#plt.show()
+ax.plot_trisurf(X,Y,Z, cmap=cm.jet, linewidth=0.2, edgecolor=(0,0,0,0)  )
+ax.view_init(elev=90., azim=0)
+plt.show()
+
 
 
 

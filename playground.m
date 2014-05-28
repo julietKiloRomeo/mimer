@@ -4,6 +4,10 @@ clear all
 
 % [y1, fs1] = audioread('HOC_s02e01.mp3');
 % [y2, fs2] = audioread('HOC_s02e02.mp3');
+%%
+
+audiowrite('daisy16.wav',y1,fs1,'BitsPerSample',16);
+audiowrite('sorry16.wav',y2,fs2,'BitsPerSample',16);
 
 %%
 C1 = constellation(y1, fs1);
