@@ -6,74 +6,37 @@ Created on Tue Jun 03 13:18:31 2014
 """
 
 #import numpy as np
-import pylab as plt
+
 from scipy.io import wavfile
 from constellation import analyze_bite
 from episode_table import episode_table
 
+ET = episode_table('test_DB.pkl', 'clear')
 
-ET = episode_table('test_DB.pkl')
+episodes = ['batman_ordinary',
+            'seinfeld_percentage',
+            'seinfeld_doubledip',
+            'south_park_ask_mr_hat']
 
-fname       = 'daisy16.wav'
-is_in_DB    = fname in ET.names
-fs, data    = wavfile.read(fname)
+def add_file(fname):
 
-if not is_in_DB:
-    
-    for i_start in range(0,len(data),1000):
-        p, cwt = analyze_bite(i_start, 5000, data, fs)
-        ET.add_map(p[0], p[1], fname)
-
-fname       = 'sorry16.wav'
-is_in_DB    = fname in ET.names
-
-if not is_in_DB:
+    is_in_DB    = fname in ET.names
     fs, data    = wavfile.read(fname)
     
-    for i_start in range(0,len(data),1000):
-        p, cwt = analyze_bite(i_start, 5000, data, fs)
-        ET.add_map(p[0], p[1], fname)
+    if not is_in_DB:
+        p,cwt,FT = analyze_bite(0, len(data)*1.0/fs, data, fs)
+        f = p[1]
+        T = p[0]
+        ET.add_map(f, T, fname)
+    return fs, data
 
+
+for i,ep in enumerate(episodes):
+    add_file('sound/'+ep+'.wav')
+    pct = (i+1)*1.0/len(episodes)*100
+    print "%i %% done...\n" % (pct)
+    
 ET.save()
 
-
-ep_matches = dict()
-
-for i_start in range(0,10000,1000):
-    p, cwt = analyze_bite(i_start, 5000, data, fs)
-    
-    for f,T_real in zip(p[0],p[1]):
-        matches = ET.hashtable[f]
-        for match in matches:
-            T = match[0]
-            ep = match[1]
-            if not ep_matches.has_key(ep):
-                ep_matches[ep] = [[],[]]
-            ep_matches[ep][0].append(T_real)
-            ep_matches[ep][1].append(T)
-
-
-
-
-
-
-
-print 'plotting...'
-
-print len(ep_matches['daisy16.wav'])
-
-print ep_matches['daisy16.wav'][1][0:10]
-
-plt.cla()
-plt.plot(ep_matches['daisy16.wav'][0][0:1000],ep_matches['daisy16.wav'][1][0:1000], 'ro')
-plt.show()
-
-#for (x, y) in ep_matches['daisy16.wav']:
-#    plt.plot(x, y, 'r+')
-#for (x, y) in ep_matches['sorry16.wav']:
-#    plt.plot(x, y, 'bo')
-#    
-#plt.show()
-        
 
 

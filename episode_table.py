@@ -32,6 +32,7 @@ class episode_table:
             self.add_marker(freq,time,name)
     
     def add_marker(self, f, T, name):
+        f = round(f)
         if not self.hashtable.has_key(f):
             self.hashtable[f] = []
         if not ([T, name] in self.hashtable[f]):            
